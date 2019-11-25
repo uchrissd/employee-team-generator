@@ -6,38 +6,31 @@ const writeFileAsync = util.promisify(fs.writeFile);
 console.log(writeFileAsync);
 
 function promptUser() {
-  return inquirer.prompt([
-    {
-      type: "input",
-      name: "name",
-      message: "What is your name?"
-    },
-    {
-      type: "input",
-      name: "location",
-      message: "Where are you from?"
-    },
-    {
-      type: "input",
-      name: "hobby",
-      message: "What is your favorite hobby?"
-    },
-    {
-      type: "input",
-      name: "food",
-      message: "What is your favorite food?"
-    },
-    {
-      type: "input",
-      name: "github",
-      message: "Enter your GitHub Username"
-    },
-    {
-      type: "input",
-      name: "linkedin",
-      message: "Enter your LinkedIn URL."
-    }
-  ]);
+  return inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is your user name?",
+        name: "username"
+      },
+      {
+        type: "languages",
+        message: "What languages do you know?",
+        name: "password"
+      },
+      {
+        type: "communication",
+        message: "What is your prefered method od communication?",
+        name: "confirm"
+      }
+    ])
+    .then(function(response) {
+      if (response.confirm === response.password) {
+        console.log("Success!");
+      } else {
+        console.log("You forgot your password already?!");
+      }
+    });
 }
 
 promptUser();

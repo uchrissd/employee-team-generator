@@ -1,13 +1,13 @@
-const Manager = require("../lib/Manager");
-const Employee = require("../lib/Employee");
+const Manager = require("../library/Manager");
+const Employee = require("../library/Employee");
 
 test("Can set office number via constructor argument", () => {
   const testValue = 100;
-  const e = new Manager("Foo", 1, "test@test.com", testValue);
+  const e = new Manager("foo", 1, "test@test.com", testValue);
   expect(e.officeNumber).toBe(testValue);
 });
 
-test("getRole() should return \"Manager\"", () => {
+test('getRole() should return "Manager"', () => {
   const testValue = "Manager";
   const e = new Manager("Foo", 1, "test@test.com", 100);
   expect(e.getRole()).toBe(testValue);
