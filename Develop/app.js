@@ -1,36 +1,122 @@
+//Global variables
+
 const inquirer = require("inquirer");
 const fs = require("fs");
 const util = require("util");
 
-const writeFileAsync = util.promisify(fs.writeFile);
-console.log(writeFileAsync);
+const initialQuestions = [
+  {
+    type: "input",
+    name: "name",
+    message: "What is the manager's name?"
+  },
+  {
+    type: "input",
+    message: "What the manager's employee id?",
+    name: "id"
+  },
+  {
+    type: "input",
+    message: "What is the manger's email?",
+    name: "email"
+  },
+  {
+    type: "input",
+    message: "What is the manger's office number?",
+    name: "officeNumber"
+  },
+  {
+    type: "checkbox",
+    message: "What type of team member would you like to add?",
+    name: "member",
+    choices: ["engineer", "intern", "done"]
+  }
+];
 
-function promptUser() {
-  return inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "What is your user name?",
-        name: "username"
-      },
-      {
-        type: "languages",
-        message: "What languages do you know?",
-        name: "password"
-      },
-      {
-        type: "communication",
-        message: "What is your prefered method od communication?",
-        name: "confirm"
-      }
-    ])
-    .then(function(response) {
-      if (response.confirm === response.password) {
-        console.log("Success!");
-      } else {
-        console.log("You forgot your password already?!");
-      }
-    });
+const engineerQuestions = [
+  {
+    type: "input",
+    name: "name",
+    message: "What is the employee's name?"
+  },
+  {
+    type: "input",
+    message: "What is the employee id?",
+    name: "id"
+  },
+  {
+    type: "input",
+    message: "What is the employee's email?",
+    name: "email"
+  },
+  {
+    type: "input",
+    message: "What is the employee's github username?",
+    name: "github"
+  },
+
+  {
+    type: "checkbox",
+    message: "What type of team member would you like to add?",
+    name: "member",
+    choices: ["engineer", "intern", "done"]
+  }
+];
+const internQuestions = [
+  {
+    type: "input",
+    name: "name",
+    message: "What is the employee's name?"
+  },
+  {
+    type: "input",
+    message: "What is the employee id?",
+    name: "id"
+  },
+  {
+    type: "input",
+    message: "What is the employee's email?",
+    name: "email"
+  },
+  {
+    type: "input",
+    message: "What school is the employee going to?",
+    name: "school"
+  },
+
+  {
+    type: "checkbox",
+    message: "What type of team member would you like to add?",
+    name: "member",
+    choices: ["engineer", "intern", "done"]
+  }
+];
+
+initialPrompt();
+
+// const writeFileAsync = util.promisify(fs.writeFile);
+// console.log(writeFileAsync);
+
+function initialPrompt() {
+  inquirer.prompt(initialQuestions).then(answers => {
+    console.log(answers["member"]);
+    // engineerPrompt();
+  });
 }
 
-promptUser();
+function engineerPrompt() {
+  inquirer.prompt(engineerQuestions).then(answers => {
+    console.log(answers);
+    internPrompt();
+  });
+}
+function internPrompt() {
+  inquirer.prompt(internQuestions).then(answers => {
+    console.log(answers);
+  });
+}
+
+// function endPromt(answers) {
+//   if (answers)
+
+// };
