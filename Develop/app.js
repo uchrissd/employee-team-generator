@@ -3,6 +3,7 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 const util = require("util");
+const answersArray = [];
 
 const initialQuestions = [
   {
@@ -99,24 +100,63 @@ initialPrompt();
 
 function initialPrompt() {
   inquirer.prompt(initialQuestions).then(answers => {
-    console.log(answers["member"]);
-    // engineerPrompt();
+    pushToTeamArray(answers, "manager");
+    if (answers.member[0] === "done") {
+      return;
+    } else {
+      if (answers.member[0] === "engineer") {
+        engineerPrompt();
+      } else {
+        internPrompt();
+      }
+    }
   });
 }
 
 function engineerPrompt() {
   inquirer.prompt(engineerQuestions).then(answers => {
-    console.log(answers);
-    internPrompt();
+    pushToTeamArray(answers, "engineer");
+    if (answers.member[0] === "done") {
+      return;
+    } else {
+      if (answers.member[0] === "engineer") {
+        engineerPrompt();
+      } else {
+        internPrompt();
+      }
+    }
   });
 }
 function internPrompt() {
   inquirer.prompt(internQuestions).then(answers => {
-    console.log(answers);
+    pushToTeamArray(answers, "intern");
+    if (answers.member[0] === "done") {
+      return;
+    } else {
+      if (answers.member[0] === "engineer") {
+        engineerPrompt();
+      } else {
+        internPrompt();
+      }
+    }
   });
 }
 
-// function endPromt(answers) {
-//   if (answers)
+function pushToTeamArray(answers, role) {
+  let cardInfo = Object.assign({}, answers);
+  cardInfo["member"] = role;
+  answersArray.push(cardInfo);
+  console.log(answersArray);
+}
 
-// };
+// const templateFile = fs
+//     .readFileSync(
+//         '../templates/engineer.html',
+//         { encoding: 'utf8' }
+//     );
+// ​
+// let temporaryFile = templateFile.replace('{{ name }}', 'Bob');
+// ​
+// temporaryFile = temporaryFile.replace('{{ email }}', 'Bob@subgenius.org')
+
+// function fileSync() {
