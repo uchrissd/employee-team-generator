@@ -4,6 +4,7 @@ const inquirer = require("inquirer");
 const fs = require("fs");
 const util = require("util");
 const answersArray = [];
+const cardObject = {};
 
 const initialQuestions = [
   {
@@ -148,6 +149,52 @@ function pushToTeamArray(answers, role) {
   answersArray.push(cardInfo);
   console.log(answersArray);
 }
+
+function readHTMLCards() {
+  fs.readFile("../Develop/templates/engineer.html", "utf8", function(
+    error,
+    data
+  ) {
+    if (error) {
+      return console.log(error);
+    }
+    cardObject["engineer"] = data;
+
+    console.log(cardObject);
+  });
+
+  fs.readFile("../Develop/templates/intern.html", "utf8", function(
+    error,
+    data
+  ) {
+    if (error) {
+      return console.log(error);
+    }
+    cardObject["intern"] = data;
+
+    console.log(cardObject);
+  });
+
+  fs.readFile("../Develop/templates/manager.html", "utf8", function(
+    error,
+    data
+  ) {
+    if (error) {
+      return console.log(error);
+    }
+    cardObject["manager"] = data;
+
+    console.log(cardObject);
+  });
+  // console.log(cardObject);
+}
+
+readHTMLCards();
+
+// Create one object with all of the HTML cards
+// Make a function that loops through the answers array and depending on what knd of member they are, creatre a card and replace the
+//curly bracket info with the actual cards
+//Then append that information to a card array. Then render that info to the main html page
 
 // const templateFile = fs
 //     .readFileSync(
