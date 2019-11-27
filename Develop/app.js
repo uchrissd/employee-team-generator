@@ -7,6 +7,7 @@ const answersArray = [];
 const cardObject = {};
 const cardHTMLArray = [];
 
+//Array for the manager prompt
 const initialQuestions = [
   {
     type: "input",
@@ -35,7 +36,7 @@ const initialQuestions = [
     choices: ["engineer", "intern", "done"]
   }
 ];
-
+//Array for the engineer prompt
 const engineerQuestions = [
   {
     type: "input",
@@ -65,6 +66,8 @@ const engineerQuestions = [
     choices: ["engineer", "intern", "done"]
   }
 ];
+
+//Array for the intern
 const internQuestions = [
   {
     type: "input",
@@ -95,11 +98,10 @@ const internQuestions = [
   }
 ];
 
+//Call the initialize prompt function
 initialPrompt();
 
-// const writeFileAsync = util.promisify(fs.writeFile);
-// console.log(writeFileAsync);
-
+//Function that initializes the prompt
 function initialPrompt() {
   inquirer.prompt(initialQuestions).then(answers => {
     pushToTeamArray(answers, "manager");
@@ -116,6 +118,7 @@ function initialPrompt() {
   });
 }
 
+//Function that prompts for engineer information
 function engineerPrompt() {
   inquirer.prompt(engineerQuestions).then(answers => {
     pushToTeamArray(answers, "engineer");
@@ -131,6 +134,7 @@ function engineerPrompt() {
     }
   });
 }
+//Function that prompts for intern information
 function internPrompt() {
   inquirer.prompt(internQuestions).then(answers => {
     pushToTeamArray(answers, "intern");
@@ -146,7 +150,7 @@ function internPrompt() {
     }
   });
 }
-
+//Function that pushes anwers and the employee roll to the team array
 function pushToTeamArray(answers, role) {
   let cardInfo = Object.assign({}, answers);
   cardInfo["member"] = role;
@@ -154,6 +158,7 @@ function pushToTeamArray(answers, role) {
   console.log(answersArray);
 }
 
+//Function for reading the HTML employee cards
 function readHTMLCards() {
   let htmlFiles = [
     { file: "../Develop/templates/engineer.html", role: "engineer" },
@@ -171,7 +176,7 @@ function readHTMLCards() {
     });
   });
 }
-
+//Function that loops through the answers array and
 function employeeLoop(cardObject) {
   console.log(Object.keys(cardObject).length);
   if (Object.keys(cardObject).length === 3) {
@@ -180,7 +185,7 @@ function employeeLoop(cardObject) {
       switch (person.member) {
         case "engineer":
           cardString = cardObject.engineer;
-          console.log(cardString);
+          // console.log("this is the card string", cardString);
 
           break;
         case "intern":
@@ -202,49 +207,52 @@ function employeeLoop(cardObject) {
 
 function updateString(person, cardString) {
   if (cardString.includes("{{ name }}")) {
-    cardString.replace("{{ name }}", person.name);
+    cardString = cardString.replace("{{ name }}", person.name);
+    console.log(cardString);
   }
 
   if (cardString.includes("{{ role }}")) {
-    cardString.replace("{{ role }}", person.role);
+    cardString = cardString.replace("{{ role }}", person.role);
   }
 
   if (cardString.includes("{{ id }}")) {
-    cardString.replace("{{ id }}", person.id);
+    cardString = cardString.replace("{{ id }}", person.id);
   }
 
   if (cardString.includes("{{ email }}")) {
-    cardString.replace("{{ email }}", person.email);
+    cardString = cardString.replace("{{ email }}", person.email);
   }
 
   if (cardString.includes("{{ github }}")) {
-    cardString.replace("{{ github }}", person.github);
+    cardString = cardString.replace("{{ github }}", person.github);
   }
 
   if (cardString.includes("{{ school }}")) {
-    cardString.replace("{{ school }}", person.school);
+    cardString = cardString.replace("{{ school }}", person.school);
   }
 
   if (cardString.includes("{{ officeNumber }}")) {
-    cardString.replace("{{ officeNumber }}", person.officeNumber);
+    cardString = cardString.replace("{{ officeNumber }}", person.officeNumber);
   }
 
   cardHTMLArray.push(cardString);
-  console.log("this is the card html array", cardHTMLArray);
+
+  renderHTML(cardHTMLArray);
 }
-// Create one object with all of the HTML cards
-// Make a function that loops through the answers array and depending on what knd of member they are, creatre a card and replace the
-//curly bracket info with the actual cards
-//Then append that information to a card array. Then render that info to the main html page
 
-// const templateFile = fs
-//     .readFileSync(
-//         '../templates/engineer.html',
-//         { encoding: 'utf8' }
-//     );
-// ​
-// let temporaryFile = templateFile.replace('{{ name }}', 'Bob');
-// ​
-// temporaryFile = temporaryFile.replace('{{ email }}', 'Bob@subgenius.org')
+function renderHTML(cardHTMLArray) {
+  fs.writeFile("./output/cards.txt", cardHTMLArray.join(), err => {
+    // throws an error, you could also catch it here
+    if (err) console.log(err);
+    // success case, the file was saved
+    console.log("file saved");
+  });
+}
 
-// function fileSync() {
+// renderMain = html => {
+//   const template = fs.readFileSync(
+//     path.resolve(templatesDir, "main.html"),
+//     "utf8"
+//   );
+//   return replacePlaceholders(template, "team", html);
+// };
