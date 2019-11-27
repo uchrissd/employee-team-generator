@@ -5,6 +5,7 @@ const fs = require("fs");
 const util = require("util");
 const answersArray = [];
 const cardObject = {};
+const cardHTMLArray = [];
 
 const initialQuestions = [
   {
@@ -103,6 +104,7 @@ function initialPrompt() {
   inquirer.prompt(initialQuestions).then(answers => {
     pushToTeamArray(answers, "manager");
     if (answers.member[0] === "done") {
+      readHTMLCards();
       return;
     } else {
       if (answers.member[0] === "engineer") {
@@ -118,6 +120,7 @@ function engineerPrompt() {
   inquirer.prompt(engineerQuestions).then(answers => {
     pushToTeamArray(answers, "engineer");
     if (answers.member[0] === "done") {
+      readHTMLCards();
       return;
     } else {
       if (answers.member[0] === "engineer") {
@@ -132,6 +135,7 @@ function internPrompt() {
   inquirer.prompt(internQuestions).then(answers => {
     pushToTeamArray(answers, "intern");
     if (answers.member[0] === "done") {
+      readHTMLCards();
       return;
     } else {
       if (answers.member[0] === "engineer") {
@@ -151,46 +155,83 @@ function pushToTeamArray(answers, role) {
 }
 
 function readHTMLCards() {
-  fs.readFile("../Develop/templates/engineer.html", "utf8", function(
-    error,
-    data
-  ) {
-    if (error) {
-      return console.log(error);
-    }
-    cardObject["engineer"] = data;
-
-    console.log(cardObject);
+  let htmlFiles = [
+    { file: "../Develop/templates/engineer.html", role: "engineer" },
+    { file: "../Develop/templates/intern.html", role: "intern" },
+    { file: "../Develop/templates/manager.html", role: "manager" }
+  ];
+  htmlFiles.forEach(element => {
+    fs.readFile(element.file, "utf8", function(error, data) {
+      if (error) {
+        return console.log(error);
+      }
+      cardObject[element.role] = data;
+      console.log(cardObject);
+      employeeLoop(cardObject);
+    });
   });
-
-  fs.readFile("../Develop/templates/intern.html", "utf8", function(
-    error,
-    data
-  ) {
-    if (error) {
-      return console.log(error);
-    }
-    cardObject["intern"] = data;
-
-    console.log(cardObject);
-  });
-
-  fs.readFile("../Develop/templates/manager.html", "utf8", function(
-    error,
-    data
-  ) {
-    if (error) {
-      return console.log(error);
-    }
-    cardObject["manager"] = data;
-
-    console.log(cardObject);
-  });
-  // console.log(cardObject);
 }
 
-readHTMLCards();
+function employeeLoop(cardObject) {
+  console.log(Object.keys(cardObject).length);
+  if (Object.keys(cardObject).length === 3) {
+    let cardString = "";
+    answersArray.forEach(person => {
+      switch (person.member) {
+        case "engineer":
+          cardString = cardObject.engineer;
+          console.log(cardString);
 
+          break;
+        case "intern":
+          cardString = cardObject.intern;
+          break;
+        case "manager":
+          cardString = cardObject.manager;
+          break;
+        default:
+          console.log("this member is not an option");
+      }
+
+      updateString(person, cardString);
+    });
+  } else {
+    console.log("still gathering html cards");
+  }
+}
+
+function updateString(person, cardString) {
+  if (cardString.includes("{{ name }}")) {
+    cardString.replace("{{ name }}", person.name);
+  }
+
+  if (cardString.includes("{{ role }}")) {
+    cardString.replace("{{ role }}", person.role);
+  }
+
+  if (cardString.includes("{{ id }}")) {
+    cardString.replace("{{ id }}", person.id);
+  }
+
+  if (cardString.includes("{{ email }}")) {
+    cardString.replace("{{ email }}", person.email);
+  }
+
+  if (cardString.includes("{{ github }}")) {
+    cardString.replace("{{ github }}", person.github);
+  }
+
+  if (cardString.includes("{{ school }}")) {
+    cardString.replace("{{ school }}", person.school);
+  }
+
+  if (cardString.includes("{{ officeNumber }}")) {
+    cardString.replace("{{ officeNumber }}", person.officeNumber);
+  }
+
+  cardHTMLArray.push(cardString);
+  console.log("this is the card html array", cardHTMLArray);
+}
 // Create one object with all of the HTML cards
 // Make a function that loops through the answers array and depending on what knd of member they are, creatre a card and replace the
 //curly bracket info with the actual cards
