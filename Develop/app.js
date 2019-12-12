@@ -6,7 +6,6 @@ const employee = require("./library/Employee");
 const engineer = require("./library/Engineer");
 const intern = require("./library/Intern");
 const manager = require("./library/Manager");
-
 const util = require("util");
 const answersArray = [];
 const cardObject = {};
