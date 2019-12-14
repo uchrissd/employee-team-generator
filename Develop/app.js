@@ -39,6 +39,7 @@ const firstQuestion = [
   }
 ];
 
+//Array for the engineer prompt
 const engineerQuestions = [
   {
     type: "input",
@@ -62,6 +63,7 @@ const engineerQuestions = [
   }
 ];
 
+//Array for the intern prompt
 const internQuestions = [
   {
     type: "input",
@@ -85,6 +87,7 @@ const internQuestions = [
   }
 ];
 
+//Array for the add more team members or stop prompt
 const addMoreTeamMembers = [
   {
     type: "list",
@@ -94,6 +97,7 @@ const addMoreTeamMembers = [
   }
 ];
 
+//Inquirer promise
 inquirer
   .prompt(firstQuestion)
   .then(function(choices) {
@@ -109,11 +113,13 @@ inquirer
       choices.officeNumber
     );
 
+    //Define the developer team variable
     let developerTeam = renderHTML(manager);
     renderTeam(choices.member, developerTeam, mainTemplate);
   })
   .catch(err => console.log(err));
 
+//This function renders the HTML files from the responses to the prompts
 function renderHTML(role) {
   const templateFile = fs.readFileSync(
     `./templates/${role.getRole().toLowerCase()}.html`,
@@ -140,6 +146,9 @@ function renderHTML(role) {
   return temporaryFile;
 }
 
+//Async function for rendering the team. Expected output is new team members in the forms of HTML
+//divs that will later be rendered onto the index HTML document which is produced once the user
+//chooses to stop adding new team members to the team.
 async function renderTeam(memberChosen, developerTeam, mainTemplate) {
   try {
     console.log("render team function");
