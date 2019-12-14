@@ -15,7 +15,7 @@ The application is written in JavaScript and runs in node.js. Users need to down
 
 **Screenshots**
 
-![Dashboard Screenshot](employee-team-generator\Assets\images\app-screen-shot.jpg)
+![ Screenshot](/Assets/images/app-screen-shot.jpg)
 
 **Code Example**
 
