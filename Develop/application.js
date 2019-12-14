@@ -96,21 +96,21 @@ const addMoreTeamMembers = [
 
 inquirer
   .prompt(firstQuestion)
-  .then(function(userChoices) {
+  .then(function(choices) {
     const mainTemplate = fs.readFileSync(`./templates/main.html`, {
       encoding: "utf8"
     });
 
     //Render the manager card
     const manager = new Manager(
-      userChoices.name,
-      userChoices.id,
-      userChoices.email,
-      userChoices.officeNumber
+      choices.name,
+      choices.id,
+      choices.email,
+      choices.officeNumber
     );
 
     let developerTeam = renderHTML(manager);
-    renderTeam(userChoices.member, developerTeam, mainTemplate);
+    renderTeam(choices.member, developerTeam, mainTemplate);
   })
   .catch(err => console.log(err));
 
@@ -141,38 +141,64 @@ function renderHTML(role) {
 }
 
 async function renderTeam(memberChosen, developerTeam, mainTemplate) {
-  console.log("render team function");
-  try{
-    do{
-      switch(memberChosen){
-        case "engineer":
-          const engineer = await inquirer.prompt(engineerQuestions);
-          console.log(engineer);
+  try {
+    console.log("render team function");
 
-          let newEngineer = new Engineer(engineer.name, engineer.id, engineer.email, engineer.github);
-          let engineerCard = renderHTML(newEngineer);
-          developerTeam = developerTeam + engineerCard
-          console.log(developerTeam);
-          let nextPrompt = await inquirer.prompt(addMoreTeamMembers);
-          console.log(nextPrompt);
+    switch (memberChosen) {
+      case "Engineer":
+        const engineer = await inquirer.prompt(engineerQuestions);
+        console.log(engineer);
 
-          if(nextPrompt.userChoices[0]===false){
-            let tempMain = mainTemplate.replace('{{ team }}', developerTeam);
-            fs.writeFileSync("index.html"tempMain)
-          } else if (nextPrompt.userChoices[0]==="true"){
-            const newTeamMember = await inquirer.prompt(addMoreTeamMembers)
-            memberChosen = newTeamMember.addMoreTeamMembers[0];
-          }
+        let newEngineer = new Engineer(
+          engineer.name,
+          engineer.id,
+          engineer.email,
+          engineer.github
+        );
 
-          break;
-          case "intern":
-          const intern = await inquirer.prompt(internQuestions)
-      }
+        console.log(newEngineer);
+        let engineerCard = renderHTML(newEngineer);
+        developerTeam = developerTeam + engineerCard;
+        console.log(developerTeam);
+        let nextPrompt = await inquirer.prompt(addMoreTeamMembers);
+        console.log("this is the next prompt", nextPrompt);
+        if (nextPrompt.moreMembers === "No, my team is ready.") {
+          let tempMain = mainTemplate.replace("{{ team }}", developerTeam);
+          fs.writeFileSync("index.html", tempMain);
+        } else {
+          const newTeamMember = await inquirer.prompt(addMoreTeamMembers);
+          memberChosen = newTeamMember;
+        }
+        break;
+      case "Intern":
+        console.log("intern was selected");
 
+        const intern = await inquirer.prompt(internQuestions);
+        console.log("this is the intern", intern);
+        let newIntern = new Intern(
+          intern.name,
+          intern.id,
+          intern.email,
+          intern.school
+        );
 
+        let internCard = renderHTML(newIntern);
+        developerTeam = developerTeam + internCard;
+        console.log(developerTeam);
+        let newNextMove = await inquirer.prompt(addMoreTeamMembers);
+        if (newNextMove.moreMembers === "No, my team is ready.") {
+          let tempMain = mainTemplate.replace("{{ team }}", developerTeam);
+          fs.writeFileSync("index.html", tempMain);
+        } else {
+          const newTeamMember = await inquirer.prompt(addMoreTeamMembers);
+          memberChosen = newTeamMember;
+        }
+        break;
 
+      default:
+        console.log(memberChosen, developerTeam, mainTemplate);
     }
-  }while
-} catch(err){
-  console.log(err)
+  } catch (err) {
+    console.log(err);
+  }
 }
